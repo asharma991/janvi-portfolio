@@ -1,0 +1,12 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-mono: 'Kode Mono', monospace;
+  --font-sans: 'Kode Mono', monospace; /* Override sans to be Kode Mono as requested "throughout the website" */
+}
+
+body {
+  font-family: 'Kode Mono', monospace;
+}
