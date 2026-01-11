@@ -6,7 +6,8 @@
 		NotebookPen,
 		GraduationCap,
 		Camera,
-		Headphones
+		Headphones,
+		ZoomIn
 	} from 'lucide-svelte';
 
 	let { cursorType } = $props<{ cursorType: string | null }>();
@@ -51,6 +52,9 @@
 			{/if}
 			{#if cursorType === 'music'}
 				<Headphones size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'view'}
+				<ZoomIn size={16} strokeWidth={2.5} />
 			{/if}
 		</div>
 	</div>
