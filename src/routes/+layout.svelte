@@ -4,8 +4,11 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import Cat from '$lib/components/Cat.svelte';
 	import { page } from '$app/stores';
+	import { dev } from '$app/environment';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 
 	let { children, data } = $props();
+	injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
 <div
