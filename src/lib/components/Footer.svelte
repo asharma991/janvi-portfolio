@@ -45,6 +45,12 @@
 			<p class="mt-4 text-xs text-white/70">
 				&copy; {new Date().getFullYear()} Janvi. All rights reserved.
 			</p>
+			<p class="mt-2 text-xs text-white/70">
+				made with ❤️ by
+				<a href="https://github.com/byasharma991" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">
+					asharma991
+				</a>
+			</p>
 		</div>
 	</div>
 </footer>
