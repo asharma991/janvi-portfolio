@@ -38,8 +38,12 @@
 	{#if data.books.length > 0}
 		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
 			{#each data.books as entry (entry._id)}
-				<article class="rounded-3xl border border-black/10 bg-white/60 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300 dark:border-white/10 dark:bg-[#500724]/30">
-					<div class="flex gap-4">
+				<article class="relative rounded-3xl border border-black/10 bg-white/60 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300 dark:border-white/10 dark:bg-[#500724]/30">
+					<span class="absolute top-5 right-5 rounded-full border border-[#FEC5E5] bg-[#FFF0F7] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#831843] dark:border-[#F472B6] dark:bg-[#831843] dark:text-white">
+						{formatStatus(entry.status)}
+					</span>
+
+					<div class="flex items-start gap-4 pr-36">
 						<div class="w-24 shrink-0 overflow-hidden rounded-2xl bg-[#FFF8FB] dark:bg-[#2B0A19]">
 							{#if entry.coverImage}
 								<img
@@ -55,19 +59,13 @@
 						</div>
 
 						<div class="min-w-0 flex-1">
-							<div class="flex flex-wrap items-start justify-between gap-3">
-								<div>
-									<h2 class="text-xl font-bold tracking-tight">{entry.title}</h2>
-									{#if entry.author}
-										<p class="mt-1 text-sm text-gray-600 dark:text-[#FBCFE8]">
-											{entry.author}
-										</p>
-									{/if}
-								</div>
-
-								<span class="rounded-full border border-[#FEC5E5] bg-[#FFF0F7] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-[#831843] dark:border-[#F472B6] dark:bg-[#831843] dark:text-white">
-									{formatStatus(entry.status)}
-								</span>
+							<div>
+								<h2 class="text-xl font-bold tracking-tight">{entry.title}</h2>
+								{#if entry.author}
+									<p class="mt-1 text-sm text-gray-600 dark:text-[#FBCFE8]">
+										{entry.author}
+									</p>
+								{/if}
 							</div>
 
 							{#if entry.genre}
