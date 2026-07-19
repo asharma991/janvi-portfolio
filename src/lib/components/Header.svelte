@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import { resolve } from '$app/paths';
 </script>
 
 <header
@@ -8,11 +7,10 @@
 >
 	<div class="mx-auto flex max-w-7xl items-center justify-between">
 		<a
-			href="/"
+			href={resolve('/')}
 			class="text-4xl font-bold tracking-tight text-white uppercase transition-opacity hover:opacity-80"
 		>
 			Janvi
 		</a>
-		<ThemeToggle />
 	</div>
 </header>
