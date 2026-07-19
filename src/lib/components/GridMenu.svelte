@@ -12,7 +12,8 @@
 		{ id: 'resume', label: 'Resume', route: '/resume' },
 		{ id: 'media', label: 'Media', route: '/media' },
 		{ id: 'music', label: 'Music', route: '/music' },
-		{ id: 'food', label: 'Food', route: '/food' }
+		{ id: 'food', label: 'Food', route: '/food' },
+		{ id: 'book', label: 'Book', route: '/book' }
 	] as const;
 
 	function handleMouseEnter(id: string) {
@@ -37,7 +38,7 @@
 
 <div class="flex h-[75vh] w-full items-center justify-center p-4">
 	<div
-		class="grid h-full w-full max-w-7xl grid-cols-1 grid-rows-7 border border-black/10 bg-white/50 shadow-sm backdrop-blur-sm transition-colors duration-300 md:grid-cols-4 md:grid-rows-2 dark:border-white/10 dark:bg-[#500724]/30"
+		class="grid h-full w-full max-w-7xl grid-cols-1 grid-rows-8 border border-black/10 bg-white/50 shadow-sm backdrop-blur-sm transition-colors duration-300 md:grid-cols-4 md:grid-rows-2 dark:border-white/10 dark:bg-[#500724]/30"
 	>
 		{#each menuItems as item (item.id)}
 			<a

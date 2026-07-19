@@ -94,3 +94,15 @@ export interface FoodGuide {
 	intro?: string;
 	cities?: FoodGuideCity[];
 }
+
+export interface BookItem {
+	_id: string;
+	title: string;
+	author?: string;
+	coverImage?: SanityImage;
+	status?: 'want-to-read' | 'currently-reading' | 'read' | 're-read';
+	genre?: string;
+	favoriteQuote?: string;
+	notes?: string;
+	link?: string;
+}

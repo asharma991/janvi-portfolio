@@ -8,7 +8,8 @@
 		Camera,
 		Headphones,
 		ZoomIn,
-		UtensilsCrossed
+		UtensilsCrossed,
+		BookOpen
 	} from 'lucide-svelte';
 
 	let { cursorType } = $props<{ cursorType: string | null }>();
@@ -56,6 +57,9 @@
 			{/if}
 			{#if cursorType === 'food'}
 				<UtensilsCrossed size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'book'}
+				<BookOpen size={16} strokeWidth={2.5} />
 			{/if}
 			{#if cursorType === 'view'}
 				<ZoomIn size={16} strokeWidth={2.5} />
