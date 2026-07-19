@@ -28,9 +28,7 @@
 
 	function handleImageClick(item: any) {
 		selectedImage = item;
-		// Reset cursor when modal opens so the user can see the default pointer (or custom one if z-index is high enough)
-		// but since we want to be able to click the close button easily, let's remove the custom cursor class
-		handleMouseLeave();
+		document.body.classList.remove('has-custom-cursor');
 	}
 </script>
 
@@ -46,12 +44,12 @@
 
 <CustomCursor {cursorType} />
 
-<div class="py-12">
+<div class="py-12 dark:text-white">
 	<div class="mb-12 flex items-center justify-between">
 		<h1 class="text-4xl font-bold tracking-tight">Media</h1>
 		<a
 			href="/"
-			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
+			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black dark:hover:text-white"
 		>
 			← Back Home
 		</a>
@@ -80,7 +78,9 @@
 						</div>
 					{/if}
 				{:else}
-					<div class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400">
+					<div
+						class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
+					>
 						No Image
 					</div>
 				{/if}
@@ -96,11 +96,12 @@
 <!-- Lightbox Modal -->
 {#if selectedImage}
 	<div
-		class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 p-4 cursor-default"
+		class="fixed inset-0 z-[200] flex cursor-default items-center justify-center bg-black/95 p-4"
 		transition:fade={{ duration: 300 }}
 		onclick={(e) => {
-            if (e.target === e.currentTarget) selectedImage = null;
-        }}
+			// Close if clicking the background wrapper directly
+			if (e.target === e.currentTarget) selectedImage = null;
+		}}
 		role="button"
 		tabindex="0"
 		onkeydown={(e) => e.key === 'Enter' && (selectedImage = null)}
@@ -110,7 +111,7 @@
 			role="presentation"
 		>
 			<button
-				class="fixed top-6 right-6 text-white/70 transition-colors hover:text-white z-[210] p-2 bg-black/20 rounded-full hover:bg-black/50"
+				class="fixed top-6 right-6 z-[210] rounded-full bg-black/20 p-2 text-white/70 transition-colors hover:bg-black/50 hover:text-white"
 				onclick={() => (selectedImage = null)}
 				aria-label="Close"
 			>

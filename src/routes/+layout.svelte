@@ -6,13 +6,15 @@
 	import { page } from '$app/stores';
 	import { dev } from '$app/environment';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import { theme } from '$lib/stores/theme';
+	import { browser } from '$app/environment';
 
 	let { children, data } = $props();
 	injectAnalytics({ mode: dev ? 'development' : 'production' });
 </script>
 
 <div
-	class="flex min-h-screen flex-col bg-[#FFF5F9] font-sans text-gray-900 selection:bg-[#FEC5E5] selection:text-black"
+	class="flex min-h-screen flex-col bg-[#FFF5F9] font-sans text-gray-900 transition-colors duration-300 selection:bg-[#FEC5E5] selection:text-black dark:bg-[#1F0510] dark:text-[#FCE7F3] dark:selection:bg-[#BE185D] dark:selection:text-white"
 >
 	<!-- Header is fixed and visible on all pages, including home -->
 	<Header />

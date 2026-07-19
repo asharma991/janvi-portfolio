@@ -1,17 +1,19 @@
 <script lang="ts">
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
+	import { resolve } from '$app/paths';
 	import { onDestroy } from 'svelte';
 
 	let cursorType = $state<string | null>(null);
 
 	const menuItems = [
-		{ id: 'about', label: 'About', href: '/about' },
-		{ id: 'work', label: 'Work', href: '/work' },
-		{ id: 'blog', label: 'Blog', href: '/blog' },
-		{ id: 'resume', label: 'Resume', href: '/resume' },
-		{ id: 'media', label: 'Media', href: '/media' },
-		{ id: 'music', label: 'Music', href: '/music' }
-	];
+		{ id: 'about', label: 'About', route: '/about' },
+		{ id: 'work', label: 'Work', route: '/work' },
+		{ id: 'blog', label: 'Blog', route: '/blog' },
+		{ id: 'resume', label: 'Resume', route: '/resume' },
+		{ id: 'media', label: 'Media', route: '/media' },
+		{ id: 'music', label: 'Music', route: '/music' },
+		{ id: 'food', label: 'Food', route: '/food' }
+	] as const;
 
 	function handleMouseEnter(id: string) {
 		cursorType = id;
@@ -35,17 +37,17 @@
 
 <div class="flex h-[75vh] w-full items-center justify-center p-4">
 	<div
-		class="grid h-full w-full max-w-7xl grid-cols-1 grid-rows-6 border border-black/10 bg-white/50 shadow-sm backdrop-blur-sm md:grid-cols-3 md:grid-rows-2"
+		class="grid h-full w-full max-w-7xl grid-cols-1 grid-rows-7 border border-black/10 bg-white/50 shadow-sm backdrop-blur-sm transition-colors duration-300 md:grid-cols-4 md:grid-rows-2 dark:border-white/10 dark:bg-[#500724]/30"
 	>
-		{#each menuItems as item}
+		{#each menuItems as item (item.id)}
 			<a
-				href={item.href}
-				class="group relative -mt-[1px] -ml-[1px] flex items-center justify-center overflow-hidden border border-black/10 transition-all duration-300 hover:bg-[#FEC5E5]"
+				href={resolve(item.route)}
+				class="group relative -mt-px -ml-px flex items-center justify-center overflow-hidden border border-black/10 transition-all duration-300 hover:bg-[#FEC5E5] dark:border-white/10 dark:hover:bg-[#831843]"
 				onmouseenter={() => handleMouseEnter(item.id)}
 				onmouseleave={handleMouseLeave}
 			>
 				<span
-					class="font-mono text-2xl tracking-widest lowercase transition-all duration-300 group-hover:scale-110 group-hover:font-bold group-hover:text-[#831843] md:text-3xl"
+					class="font-mono text-2xl tracking-widest lowercase transition-all duration-300 group-hover:scale-110 group-hover:font-bold group-hover:text-[#831843] md:text-3xl dark:text-[#FCE7F3] dark:group-hover:text-white"
 				>
 					{item.label}
 				</span>

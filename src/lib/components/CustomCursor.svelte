@@ -7,7 +7,8 @@
 		GraduationCap,
 		Camera,
 		Headphones,
-		ZoomIn
+		ZoomIn,
+		UtensilsCrossed
 	} from 'lucide-svelte';
 
 	let { cursorType } = $props<{ cursorType: string | null }>();
@@ -25,7 +26,7 @@
 
 {#if cursorType}
 	<div
-		class="pointer-events-none fixed z-[100] flex -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-1 text-[#831843]"
+		class="pointer-events-none fixed z-[9999] flex -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-1 text-[#831843] dark:text-[#F472B6]"
 		style="left: {mouseX}px; top: {mouseY}px;"
 	>
 		<!-- The Cat is always there -->
@@ -33,7 +34,7 @@
 
 		<!-- The Secondary Icon -->
 		<div
-			class="absolute -top-4 -right-4 rounded-full border border-[#831843] bg-white p-1 text-[#831843] shadow-sm"
+			class="absolute -top-4 -right-4 rounded-full border border-[#831843] bg-white p-1 text-[#831843] shadow-sm dark:border-[#F472B6] dark:bg-[#500724] dark:text-[#F472B6]"
 		>
 			{#if cursorType === 'about'}
 				<HelpCircle size={16} strokeWidth={2.5} />
@@ -52,6 +53,9 @@
 			{/if}
 			{#if cursorType === 'music'}
 				<Headphones size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'food'}
+				<UtensilsCrossed size={16} strokeWidth={2.5} />
 			{/if}
 			{#if cursorType === 'view'}
 				<ZoomIn size={16} strokeWidth={2.5} />

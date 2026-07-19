@@ -13,7 +13,9 @@
 	}
 </script>
 
-<footer class="mt-auto w-full bg-[#BE185D] px-4 py-12 text-white md:px-8">
+<footer
+	class="mt-auto w-full bg-[#BE185D] px-4 py-12 text-white transition-colors duration-300 md:px-8 dark:border-t dark:border-white/10 dark:bg-[#500724]"
+>
 	<div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 md:grid-cols-2">
 		<!-- Connect Section -->
 		<div>
@@ -26,7 +28,7 @@
 							href={social.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							class="rounded-full border border-white/20 p-2 transition-all duration-300 hover:border-white hover:bg-white hover:text-[#831843]"
+							class="rounded-full border border-white/20 p-2 transition-all duration-300 hover:border-white hover:bg-white hover:text-[#831843] dark:hover:bg-[#831843] dark:hover:text-[#FCE7F3]"
 							aria-label={social.platform}
 						>
 							<Icon size={20} />
