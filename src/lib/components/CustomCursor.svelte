@@ -58,7 +58,7 @@
 			{#if cursorType === 'food'}
 				<UtensilsCrossed size={16} strokeWidth={2.5} />
 			{/if}
-			{#if cursorType === 'book'}
+			{#if cursorType === 'books'}
 				<BookOpen size={16} strokeWidth={2.5} />
 			{/if}
 			{#if cursorType === 'view'}

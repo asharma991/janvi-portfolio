@@ -95,7 +95,7 @@ export interface FoodGuide {
 	cities?: FoodGuideCity[];
 }
 
-export interface BookItem {
+export interface BooksItem {
 	_id: string;
 	title: string;
 	author?: string;

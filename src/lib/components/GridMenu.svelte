@@ -13,7 +13,7 @@
 		{ id: 'media', label: 'Media', route: '/media' },
 		{ id: 'music', label: 'Music', route: '/music' },
 		{ id: 'food', label: 'Food', route: '/food' },
-		{ id: 'book', label: 'Book', route: '/book' }
+		{ id: 'books', label: 'Books', route: '/books' }
 	] as const;
 
 	function handleMouseEnter(id: string) {
