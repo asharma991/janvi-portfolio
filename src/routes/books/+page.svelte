@@ -52,14 +52,14 @@
 	<div class="mb-12 flex items-center justify-between gap-4">
 		<div>
 			<h1 class="text-4xl font-bold tracking-tight">Books</h1>
-			<p class="mt-4 max-w-2xl text-sm leading-7 text-gray-600 dark:text-[#FBCFE8]">
+			<p class="mt-4 max-w-2xl text-sm leading-7 text-gray-600">
 				A growing shelf of reads, re-reads, and current favorites.
 			</p>
 		</div>
 
 		<a
 			href={resolve('/')}
-			class="shrink-0 text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black dark:hover:text-white"
+			class="shrink-0 text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
 		>
 			← Back Home
 		</a>
@@ -67,25 +67,25 @@
 
 	{#if books.length > 0}
 		<div
-			class="mb-8 flex flex-col gap-4 rounded-3xl border border-black/10 bg-white/50 p-4 backdrop-blur-sm md:flex-row md:items-end md:justify-between dark:border-white/10 dark:bg-[#500724]/20"
+			class="mb-8 flex flex-col gap-4 rounded-3xl border border-black/10 bg-white/50 p-4 backdrop-blur-sm md:flex-row md:items-end md:justify-between"
 		>
 			<div>
-				<p class="text-xs font-bold tracking-[0.2em] text-[#BE185D] uppercase dark:text-[#F9A8D4]">
+				<p class="text-xs font-bold tracking-[0.2em] text-[#BE185D] uppercase">
 					Filters
 				</p>
-				<p class="mt-2 text-sm text-gray-600 dark:text-[#FBCFE8]">
+				<p class="mt-2 text-sm text-gray-600">
 					Showing {visibleBooks.length} of {books.length} books.
 				</p>
 			</div>
 
 			<div class="flex flex-col gap-3 sm:flex-row">
 				<label
-					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase dark:text-[#F9A8D4]"
+					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
 				>
 					Author
 					<select
 						bind:value={selectedAuthor}
-						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4] dark:border-white/10 dark:bg-[#2B0A19] dark:text-[#FCE7F3]"
+						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
 						<option value="all">All Authors</option>
 						{#each authorOptions as author (author)}
@@ -95,12 +95,12 @@
 				</label>
 
 				<label
-					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase dark:text-[#F9A8D4]"
+					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
 				>
 					Genre
 					<select
 						bind:value={selectedGenre}
-						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4] dark:border-white/10 dark:bg-[#2B0A19] dark:text-[#FCE7F3]"
+						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
 						<option value="all">All Genres</option>
 						{#each genreOptions as genre (genre)}
@@ -115,10 +115,10 @@
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
 				{#each visibleBooks as entry (entry._id)}
 					<article
-						class="rounded-3xl border border-black/10 bg-white/60 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300 dark:border-white/10 dark:bg-[#500724]/30"
+						class="rounded-3xl border border-black/10 bg-white/60 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300"
 					>
 						<div class="flex items-start justify-between gap-4">
-							<div class="w-24 shrink-0 overflow-hidden rounded-2xl bg-[#FFF8FB] dark:bg-[#2B0A19]">
+							<div class="w-24 shrink-0 overflow-hidden rounded-2xl bg-[#FFF8FB]">
 								{#if entry.coverImage}
 									<img
 										src={urlFor(entry.coverImage).width(240).height(360).url()}
@@ -127,7 +127,7 @@
 									/>
 								{:else}
 									<div
-										class="flex h-32 items-center justify-center text-xs tracking-[0.2em] text-gray-400 uppercase dark:text-[#F9A8D4]"
+										class="flex h-32 items-center justify-center text-xs tracking-[0.2em] text-gray-400 uppercase"
 									>
 										No Cover
 									</div>
@@ -135,7 +135,7 @@
 							</div>
 
 							<span
-								class="shrink-0 rounded-full border border-[#FEC5E5] bg-[#FFF0F7] px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-[#831843] uppercase dark:border-[#F472B6] dark:bg-[#831843] dark:text-white"
+								class="shrink-0 rounded-full border border-[#FEC5E5] bg-[#FFF0F7] px-3 py-1 text-[11px] font-bold tracking-[0.18em] text-[#831843] uppercase"
 							>
 								{formatStatus(entry.status)}
 							</span>
@@ -145,7 +145,7 @@
 							<div>
 								<h2 class="text-xl font-bold tracking-tight">{entry.title}</h2>
 								{#if entry.author}
-									<p class="mt-1 text-sm text-gray-600 dark:text-[#FBCFE8]">
+									<p class="mt-1 text-sm text-gray-600">
 										{entry.author}
 									</p>
 								{/if}
@@ -153,20 +153,20 @@
 
 							{#if entry.genre}
 								<p
-									class="mt-3 text-xs tracking-[0.18em] text-gray-500 uppercase dark:text-[#F9A8D4]"
+									class="mt-3 text-xs tracking-[0.18em] text-gray-500 uppercase"
 								>
 									{entry.genre}
 								</p>
 							{/if}
 
 							{#if entry.favoriteQuote}
-								<p class="mt-4 text-sm leading-6 text-[#831843] italic dark:text-[#F9A8D4]">
+								<p class="mt-4 text-sm leading-6 text-[#831843] italic">
 									"{entry.favoriteQuote}"
 								</p>
 							{/if}
 
 							{#if entry.notes}
-								<p class="mt-4 text-sm leading-6 text-gray-700 dark:text-[#FCE7F3]">
+								<p class="mt-4 text-sm leading-6 text-gray-700">
 									{entry.notes}
 								</p>
 							{/if}
@@ -174,7 +174,7 @@
 							{#if entry.link}
 								<button
 									type="button"
-									class="mt-4 inline-block text-xs font-bold tracking-[0.18em] text-[#BE185D] uppercase transition-opacity hover:opacity-70 dark:text-[#F9A8D4]"
+									class="mt-4 inline-block text-xs font-bold tracking-[0.18em] text-[#BE185D] uppercase transition-opacity hover:opacity-70"
 									onclick={() => window.open(entry.link, '_blank', 'noopener,noreferrer')}
 								>
 									Open Link
@@ -186,14 +186,14 @@
 			</div>
 		{:else}
 			<div
-				class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500 dark:border-white/10 dark:text-[#F9A8D4]"
+				class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500"
 			>
 				No books match the current author and genre filters.
 			</div>
 		{/if}
 	{:else}
 		<div
-			class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500 dark:border-white/10 dark:text-[#F9A8D4]"
+			class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500"
 		>
 			Add `Books` documents in Sanity to populate this page.
 		</div>

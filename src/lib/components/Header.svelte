@@ -3,7 +3,7 @@
 </script>
 
 <header
-	class="fixed top-0 left-0 z-50 w-full bg-[#BE185D] px-4 py-6 text-white shadow-md backdrop-blur-sm transition-colors duration-300 md:px-8 dark:border-b dark:border-white/10 dark:bg-[#500724]/90"
+	class="fixed top-0 left-0 z-50 w-full bg-[#BE185D] px-4 py-6 text-white shadow-md backdrop-blur-sm transition-colors duration-300 md:px-8"
 >
 	<div class="mx-auto flex max-w-7xl items-center justify-between">
 		<a

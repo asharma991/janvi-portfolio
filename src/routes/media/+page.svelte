@@ -44,12 +44,12 @@
 
 <CustomCursor {cursorType} />
 
-<div class="py-12 dark:text-white">
+<div class="py-12">
 	<div class="mb-12 flex items-center justify-between">
 		<h1 class="text-4xl font-bold tracking-tight">Media</h1>
 		<a
 			href="/"
-			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black dark:hover:text-white"
+			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
 		>
 			← Back Home
 		</a>
@@ -79,7 +79,7 @@
 					{/if}
 				{:else}
 					<div
-						class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
+						class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400"
 					>
 						No Image
 					</div>

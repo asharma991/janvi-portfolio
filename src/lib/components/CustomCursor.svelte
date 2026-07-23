@@ -27,7 +27,7 @@
 
 {#if cursorType}
 	<div
-		class="pointer-events-none fixed z-[9999] flex -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-1 text-[#831843] dark:text-[#F472B6]"
+		class="pointer-events-none fixed z-[9999] flex -translate-x-1/2 -translate-y-1/2 transform items-center justify-center gap-1 text-[#831843]"
 		style="left: {mouseX}px; top: {mouseY}px;"
 	>
 		<!-- The Cat is always there -->
@@ -35,7 +35,7 @@
 
 		<!-- The Secondary Icon -->
 		<div
-			class="absolute -top-4 -right-4 rounded-full border border-[#831843] bg-white p-1 text-[#831843] shadow-sm dark:border-[#F472B6] dark:bg-[#500724] dark:text-[#F472B6]"
+			class="absolute -top-4 -right-4 rounded-full border border-[#831843] bg-white p-1 text-[#831843] shadow-sm"
 		>
 			{#if cursorType === 'about'}
 				<HelpCircle size={16} strokeWidth={2.5} />
