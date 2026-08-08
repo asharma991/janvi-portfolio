@@ -3,12 +3,13 @@
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
 	import { onDestroy } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
-	import { X } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight, X } from 'lucide-svelte';
 
 	let { data } = $props();
 
 	let cursorType = $state<string | null>(null);
-	let selectedImage = $state<any>(null);
+	let selectedIndex = $state<number | null>(null);
+	let selectedImage = $derived(selectedIndex === null ? null : data.media[selectedIndex]);
 
 	function handleMouseEnter() {
 		cursorType = 'view';
@@ -26,15 +27,26 @@
 		}
 	});
 
-	function handleImageClick(item: any) {
-		selectedImage = item;
+	function handleImageClick(index: number) {
+		selectedIndex = index;
 		document.body.classList.remove('has-custom-cursor');
+	}
+
+	function closeLightbox() {
+		selectedIndex = null;
+	}
+
+	function navigateLightbox(direction: -1 | 1) {
+		if (selectedIndex === null || data.media.length < 2) return;
+		selectedIndex = (selectedIndex + direction + data.media.length) % data.media.length;
 	}
 </script>
 
 <svelte:window
 	onkeydown={(e) => {
-		if (e.key === 'Escape') selectedImage = null;
+		if (e.key === 'Escape') closeLightbox();
+		if (e.key === 'ArrowLeft') navigateLightbox(-1);
+		if (e.key === 'ArrowRight') navigateLightbox(1);
 	}}
 />
 
@@ -56,12 +68,12 @@
 	</div>
 
 	<div class="columns-1 gap-8 space-y-8 md:columns-2 lg:columns-3">
-		{#each data.media as item (item._id)}
+		{#each data.media as item, index (item._id)}
 			<button
 				class="group relative block w-full break-inside-avoid overflow-hidden rounded-xl text-left focus:outline-none"
 				onmouseenter={handleMouseEnter}
 				onmouseleave={handleMouseLeave}
-				onclick={() => handleImageClick(item)}
+				onclick={() => handleImageClick(index)}
 				aria-label="View full image"
 			>
 				{#if item.image}
@@ -100,11 +112,11 @@
 		transition:fade={{ duration: 300 }}
 		onclick={(e) => {
 			// Close if clicking the background wrapper directly
-			if (e.target === e.currentTarget) selectedImage = null;
+			if (e.target === e.currentTarget) closeLightbox();
 		}}
 		role="button"
 		tabindex="0"
-		onkeydown={(e) => e.key === 'Enter' && (selectedImage = null)}
+		onkeydown={(e) => e.key === 'Enter' && closeLightbox()}
 	>
 		<div
 			class="relative flex max-h-screen w-auto max-w-7xl flex-col items-center justify-center"
@@ -112,11 +124,29 @@
 		>
 			<button
 				class="fixed top-6 right-6 z-[210] rounded-full bg-black/20 p-2 text-white/70 transition-colors hover:bg-black/50 hover:text-white"
-				onclick={() => (selectedImage = null)}
+				onclick={closeLightbox}
 				aria-label="Close"
 			>
 				<X size={32} />
 			</button>
+
+			{#if data.media.length > 1}
+				<button
+					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
+					onclick={() => navigateLightbox(-1)}
+					aria-label="Previous photo"
+				>
+					<ChevronLeft size={32} strokeWidth={1.75} />
+				</button>
+
+				<button
+					class="fixed top-1/2 right-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:p-3"
+					onclick={() => navigateLightbox(1)}
+					aria-label="Next photo"
+				>
+					<ChevronRight size={32} strokeWidth={1.75} />
+				</button>
+			{/if}
 
 			{#if selectedImage.image}
 				<img
