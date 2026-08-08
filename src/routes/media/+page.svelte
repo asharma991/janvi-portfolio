@@ -90,9 +90,7 @@
 						</div>
 					{/if}
 				{:else}
-					<div
-						class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400"
-					>
+					<div class="flex aspect-square items-center justify-center bg-gray-100 text-gray-400">
 						No Image
 					</div>
 				{/if}
@@ -132,7 +130,7 @@
 
 			{#if data.media.length > 1}
 				<button
-					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
+					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 cursor-pointer rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
 					onclick={() => navigateLightbox(-1)}
 					aria-label="Previous photo"
 				>
@@ -140,7 +138,7 @@
 				</button>
 
 				<button
-					class="fixed top-1/2 right-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:p-3"
+					class="fixed top-1/2 right-3 z-[210] -translate-y-1/2 cursor-pointer rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:p-3"
 					onclick={() => navigateLightbox(1)}
 					aria-label="Next photo"
 				>
