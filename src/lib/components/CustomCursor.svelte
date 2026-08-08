@@ -9,7 +9,10 @@
 		Headphones,
 		ZoomIn,
 		UtensilsCrossed,
-		BookOpen
+		BookOpen,
+		ArrowLeft,
+		ArrowRight,
+		X
 	} from 'lucide-svelte';
 
 	let { cursorType } = $props<{ cursorType: string | null }>();
@@ -63,6 +66,15 @@
 			{/if}
 			{#if cursorType === 'view'}
 				<ZoomIn size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'previous'}
+				<ArrowLeft size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'next'}
+				<ArrowRight size={16} strokeWidth={2.5} />
+			{/if}
+			{#if cursorType === 'close'}
+				<X size={16} strokeWidth={2.5} />
 			{/if}
 		</div>
 	</div>

@@ -21,6 +21,16 @@
 		document.body.classList.remove('has-custom-cursor');
 	}
 
+	function showControlCursor(type: 'previous' | 'next' | 'close') {
+		cursorType = type;
+		document.body.classList.add('has-custom-cursor');
+	}
+
+	function hideControlCursor() {
+		cursorType = null;
+		document.body.classList.remove('has-custom-cursor');
+	}
+
 	onDestroy(() => {
 		if (typeof document !== 'undefined') {
 			document.body.classList.remove('has-custom-cursor');
@@ -29,11 +39,12 @@
 
 	function handleImageClick(index: number) {
 		selectedIndex = index;
-		document.body.classList.remove('has-custom-cursor');
+		hideControlCursor();
 	}
 
 	function closeLightbox() {
 		selectedIndex = null;
+		hideControlCursor();
 	}
 
 	function navigateLightbox(direction: -1 | 1) {
@@ -122,6 +133,8 @@
 		>
 			<button
 				class="fixed top-6 right-6 z-[210] rounded-full bg-black/20 p-2 text-white/70 transition-colors hover:bg-black/50 hover:text-white"
+				onmouseenter={() => showControlCursor('close')}
+				onmouseleave={hideControlCursor}
 				onclick={closeLightbox}
 				aria-label="Close"
 			>
@@ -130,7 +143,9 @@
 
 			{#if data.media.length > 1}
 				<button
-					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 cursor-pointer rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
+					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
+					onmouseenter={() => showControlCursor('previous')}
+					onmouseleave={hideControlCursor}
 					onclick={() => navigateLightbox(-1)}
 					aria-label="Previous photo"
 				>
@@ -138,7 +153,9 @@
 				</button>
 
 				<button
-					class="fixed top-1/2 right-3 z-[210] -translate-y-1/2 cursor-pointer rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:p-3"
+					class="fixed top-1/2 right-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6 sm:p-3"
+					onmouseenter={() => showControlCursor('next')}
+					onmouseleave={hideControlCursor}
 					onclick={() => navigateLightbox(1)}
 					aria-label="Next photo"
 				>
