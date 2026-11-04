@@ -47,7 +47,7 @@ export interface SiteSettings {
 	substackUrl?: string;
 	spotifyEmbedUrl?: string;
 	spotifyPlaylists?: { _key: string; title: string; url: string }[];
-	socials?: { platform: string; url: string }[];
+	socials?: ({ platform?: string | null; url?: string | null } | null)[] | null;
 }
 
 export interface BlogPost {

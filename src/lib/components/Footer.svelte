@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { Linkedin, Twitter, Mail, Newspaper, Link } from 'lucide-svelte';
+	import type { SiteSettings } from '$lib/sanity/types';
+	import { normalizeSocialLinks } from '$lib/socials';
 
-	let { socials } = $props<{ socials?: { platform: string; url: string }[] }>();
+	let { socials } = $props<{ socials?: SiteSettings['socials'] }>();
+	const validSocials = $derived(normalizeSocialLinks(socials));
 
 	function getIcon(platform: string) {
 		const p = platform.toLowerCase();
@@ -21,8 +24,8 @@
 		<div>
 			<h3 class="mb-4 text-sm font-bold tracking-wider text-white uppercase">Connect</h3>
 			<div class="flex gap-4">
-				{#if socials && socials.length > 0}
-					{#each socials as social}
+				{#if validSocials.length > 0}
+					{#each validSocials as social}
 						{@const Icon = getIcon(social.platform)}
 						<a
 							href={social.url}
