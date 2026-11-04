@@ -1,12 +1,19 @@
 import { client } from '$lib/sanity/client';
 import type { Project } from '$lib/sanity/types';
+import { getPagination, paginationMeta } from '$lib/pagination';
 
-export const load = async () => {
-  const query = `*[_type == "project"] | order(_createdAt desc)`;
+export const load = async ({ url }) => {
+  const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
+  const query = `{
+    "projects": *[_type == "project"] | order(_createdAt desc) [$start...$end],
+    "totalItems": count(*[_type == "project"])
+  }`;
   
   try {
-      const projects = await client.fetch(query);
-      if (projects && projects.length > 0) return { projects };
+      const result = await client.fetch(query, { start, end });
+      if (result.projects && result.projects.length > 0) {
+        return { projects: result.projects, pagination: paginationMeta(page, pageSize, result.totalItems) };
+      }
       throw new Error("No projects found");
   } catch (e) {
       console.log("Using mock data for work");
@@ -44,6 +51,7 @@ export const load = async () => {
               category: 'academic'
           }
       ];
-      return { projects: mockProjects };
+      const projects = mockProjects.slice(start, end);
+      return { projects, pagination: paginationMeta(page, pageSize, mockProjects.length) };
   }
 };

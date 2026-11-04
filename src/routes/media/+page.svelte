@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { urlFor } from '$lib/sanity/client';
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import { onDestroy } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
 	import { ChevronLeft, ChevronRight, X } from 'lucide-svelte';
@@ -112,6 +113,8 @@
 	{#if data.media.length === 0}
 		<div class="py-20 text-center text-gray-400">No media uploaded yet.</div>
 	{/if}
+
+	<Pagination {...data.pagination} label="photos" />
 </div>
 
 <!-- Lightbox Modal -->

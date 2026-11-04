@@ -1,29 +1,21 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { urlFor } from '$lib/sanity/client';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import type { BooksItem } from '$lib/sanity/types';
 
-	let { data }: { data: { books: BooksItem[] } } = $props();
+	type PaginationData = { page: number; pageSize: number; totalItems: number; totalPages: number };
+	let {
+		data
+	}: {
+		data: { books: BooksItem[]; authors: string[]; genres: string[]; pagination: PaginationData };
+	} = $props();
 	let selectedAuthor = $state('all');
 	let selectedGenre = $state('all');
 
 	const books = $derived((data.books ?? []) as BooksItem[]);
-	const authorOptions = $derived(
-		[
-			...new Set(
-				books
-					.map((entry) => entry.author?.trim())
-					.filter((value): value is string => Boolean(value))
-			)
-		].sort((a, b) => a.localeCompare(b))
-	);
-	const genreOptions = $derived(
-		[
-			...new Set(
-				books.map((entry) => entry.genre?.trim()).filter((value): value is string => Boolean(value))
-			)
-		].sort((a, b) => a.localeCompare(b))
-	);
+	const authorOptions = $derived((data.authors ?? []).toSorted((a, b) => a.localeCompare(b)));
+	const genreOptions = $derived((data.genres ?? []).toSorted((a, b) => a.localeCompare(b)));
 	const visibleBooks = $derived(
 		books
 			.filter((entry) => selectedAuthor === 'all' || entry.author?.trim() === selectedAuthor)
@@ -74,7 +66,7 @@
 					Filters
 				</p>
 				<p class="mt-2 text-sm text-gray-600">
-					Showing {visibleBooks.length} of {books.length} books.
+					Showing {visibleBooks.length} on this page · {data.pagination.totalItems} total books.
 				</p>
 			</div>
 
@@ -191,6 +183,8 @@
 				No books match the current author and genre filters.
 			</div>
 		{/if}
+
+		<Pagination {...data.pagination} label="books" />
 	{:else}
 		<div
 			class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500"

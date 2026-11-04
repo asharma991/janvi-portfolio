@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProjectCard from '$lib/components/ProjectCard.svelte';
+  import Pagination from '$lib/components/Pagination.svelte';
   
   let { data } = $props();
 </script>
@@ -21,4 +22,6 @@
        <ProjectCard {project} />
     {/each}
   </div>
+
+  <Pagination {...data.pagination} label="projects" />
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Pagination from '$lib/components/Pagination.svelte';
   let { data } = $props();
 </script>
 
@@ -32,4 +33,6 @@
       </div>
     {/each}
   </div>
+
+  <Pagination {...data.pagination} label="academic writing" />
 </section>

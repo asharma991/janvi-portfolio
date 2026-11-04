@@ -1,5 +1,6 @@
 <script lang="ts">
   import { urlFor } from '$lib/sanity/client';
+  import Pagination from '$lib/components/Pagination.svelte';
   let { data } = $props();
 </script>
 
@@ -71,4 +72,6 @@
         {/if}
     </div>
   </div>
+
+  <Pagination {...data.pagination} label="music" />
 </div>

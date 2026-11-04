@@ -1,0 +1,51 @@
+<script lang="ts">
+	let {
+		page,
+		totalPages,
+		label = 'items'
+	}: { page: number; totalPages: number; label?: string } = $props();
+
+	function pageHref(targetPage: number) {
+		return targetPage === 1 ? '?' : `?page=${targetPage}`;
+	}
+</script>
+
+{#if totalPages > 1}
+	<nav class="mt-12 flex items-center justify-center gap-3" aria-label={`${label} pagination`}>
+		{#if page > 1}
+			<a
+				href={pageHref(page - 1)}
+				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
+				rel="prev"
+			>
+				← Previous
+			</a>
+		{:else}
+			<span
+				class="cursor-not-allowed rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
+			>
+				← Previous
+			</span>
+		{/if}
+
+		<span class="text-xs font-bold tracking-[0.16em] text-gray-500 uppercase">
+			Page {page} of {totalPages}
+		</span>
+
+		{#if page < totalPages}
+			<a
+				href={pageHref(page + 1)}
+				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
+				rel="next"
+			>
+				Next →
+			</a>
+		{:else}
+			<span
+				class="cursor-not-allowed rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
+			>
+				Next →
+			</span>
+		{/if}
+	</nav>
+{/if}
