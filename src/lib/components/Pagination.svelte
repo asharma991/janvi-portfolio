@@ -1,19 +1,32 @@
 <script lang="ts">
 	import CursorLink from './CursorLink.svelte';
 	import { ArrowLeft, ArrowRight } from 'lucide-svelte';
+	import { page as currentPage } from '$app/state';
+	import { paginationHref } from '$lib/pagination';
 	let {
 		page,
 		totalPages,
-		label = 'items'
-	}: { page: number; totalPages: number; label?: string } = $props();
+		label = 'items',
+		pageParam = 'page',
+		anchor = ''
+	}: {
+		page: number;
+		totalPages: number;
+		label?: string;
+		pageParam?: string;
+		anchor?: string;
+	} = $props();
 
 	function pageHref(targetPage: number) {
-		return targetPage === 1 ? '?' : `?page=${targetPage}`;
+		return paginationHref(currentPage.url.searchParams, targetPage, pageParam, anchor);
 	}
 </script>
 
 {#if totalPages > 1}
-	<nav class="mt-12 flex items-center justify-center gap-3" aria-label={`${label} pagination`}>
+	<nav
+		class="mt-12 flex flex-wrap items-center justify-center gap-3"
+		aria-label={`${label} pagination`}
+	>
 		{#if page > 1}
 			<CursorLink
 				href={pageHref(page - 1)}

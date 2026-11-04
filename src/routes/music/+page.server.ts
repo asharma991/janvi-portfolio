@@ -1,7 +1,7 @@
 import { client } from '$lib/sanity/client';
 import type { MusicItem, SiteSettings } from '$lib/sanity/types';
 import { spotifyEmbedUrl } from '$lib/spotify';
-import { getPagination, paginationMeta } from '$lib/pagination';
+import { getPagination, paginateItems, paginationMeta } from '$lib/pagination';
 
 export const load = async ({ url }) => {
 	const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 8);
@@ -38,13 +38,20 @@ export const load = async ({ url }) => {
 			seen.add(embedUrl);
 			return [{ _key: playlist._key, title: playlist.title || 'Spotify playlist', embedUrl }];
 		});
+		const playlistPage = paginateItems(playlists, url.searchParams.get('playlistPage'), 3);
 		return {
 			music: data.music || [],
-			playlists,
+			playlists: playlistPage.items,
+			playlistPagination: playlistPage.pagination,
 			pagination: paginationMeta(page, pageSize, data.totalItems)
 		};
 	} catch (e) {
 		console.log('Using mock music data');
-		return { music: [], playlists: [], pagination: paginationMeta(page, pageSize, 0) };
+		return {
+			music: [],
+			playlists: [],
+			playlistPagination: paginationMeta(1, 3, 0),
+			pagination: paginationMeta(page, pageSize, 0)
+		};
 	}
 };

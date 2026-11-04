@@ -21,7 +21,7 @@
 
 	<div class="grid grid-cols-1 items-start gap-12 md:grid-cols-2">
 		<!-- Playlists stack independently alongside the favorites grid. -->
-		<section class="min-w-0 space-y-6" aria-label="Spotify playlists">
+		<section id="playlists" class="min-w-0 scroll-mt-32 space-y-6" aria-label="Spotify playlists">
 			{#each data.playlists as playlist (playlist._key)}
 				<div class="h-[400px] overflow-hidden rounded-xl bg-gray-50">
 					<iframe
@@ -42,6 +42,12 @@
 					<p>No playlists added yet.</p>
 				</div>
 			{/each}
+			<Pagination
+				{...data.playlistPagination}
+				label="playlists"
+				pageParam="playlistPage"
+				anchor="playlists"
+			/>
 		</section>
 
 		<!-- Song/Album Grid -->
