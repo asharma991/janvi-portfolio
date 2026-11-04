@@ -42,12 +42,6 @@
 					<p>No playlists added yet.</p>
 				</div>
 			{/each}
-			<Pagination
-				{...data.playlistPagination}
-				label="playlists"
-				pageParam="playlistPage"
-				anchor="playlists"
-			/>
 		</section>
 
 		<!-- Song/Album Grid -->
@@ -90,5 +84,17 @@
 		</div>
 	</div>
 
-	<Pagination {...data.pagination} label="music" />
+	<div class="grid grid-cols-1 items-start gap-x-12 md:grid-cols-2">
+		<div class="min-w-0">
+			<Pagination
+				{...data.playlistPagination}
+				label="playlists"
+				pageParam="playlistPage"
+				anchor="playlists"
+			/>
+		</div>
+		<div class="min-w-0">
+			<Pagination {...data.pagination} label="music" />
+		</div>
+	</div>
 </div>
