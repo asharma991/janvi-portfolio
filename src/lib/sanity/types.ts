@@ -46,6 +46,7 @@ export interface About {
 export interface SiteSettings {
 	substackUrl?: string;
 	spotifyEmbedUrl?: string;
+	spotifyPlaylists?: { _key: string; title: string; url: string }[];
 	socials?: { platform: string; url: string }[];
 }
 
