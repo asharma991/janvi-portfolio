@@ -5,7 +5,13 @@ import { getPagination, paginationMeta } from '$lib/pagination';
 export const load = async ({ url }) => {
   const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 10);
   const query = `{
-    "works": *[_type == "academicWork"] | order(publicationDate desc) [$start...$end],
+    "works": *[_type == "academicWork"] | order(publicationDate desc) [$start...$end] {
+      _id,
+      title,
+      subtitle,
+      publicationDate,
+      link
+    },
     "totalItems": count(*[_type == "academicWork"])
   }`;
   try {

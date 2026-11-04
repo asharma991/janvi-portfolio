@@ -5,7 +5,15 @@ import { getPagination, paginationMeta } from '$lib/pagination';
 export const load = async ({ url }) => {
   const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
   const query = `{
-    "media": *[_type == "media"] | order(_createdAt desc) [$start...$end],
+    "media": *[_type == "media"] | order(_createdAt desc) [$start...$end] {
+      _id,
+      caption,
+      image {
+        asset,
+        crop,
+        hotspot
+      }
+    },
     "totalItems": count(*[_type == "media"])
   }`;
   try {

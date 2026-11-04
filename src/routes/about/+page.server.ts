@@ -2,7 +2,14 @@ import { client } from '$lib/sanity/client';
 import type { About } from '$lib/sanity/types';
 
 export const load = async () => {
-  const query = `*[_type == "about"][0]`;
+  const query = `*[_type == "about"][0] {
+    bio,
+    image {
+      asset,
+      crop,
+      hotspot
+    }
+  }`;
   try {
       const about = await client.fetch(query);
       if (about) return { about };

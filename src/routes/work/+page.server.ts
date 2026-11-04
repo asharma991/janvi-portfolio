@@ -5,7 +5,17 @@ import { getPagination, paginationMeta } from '$lib/pagination';
 export const load = async ({ url }) => {
   const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
   const query = `{
-    "projects": *[_type == "project"] | order(_createdAt desc) [$start...$end],
+    "projects": *[_type == "project"] | order(_createdAt desc) [$start...$end] {
+      _id,
+      title,
+      description,
+      link,
+      mainImage {
+        asset,
+        crop,
+        hotspot
+      }
+    },
     "totalItems": count(*[_type == "project"])
   }`;
   

@@ -5,7 +5,17 @@ import { getPagination, paginationMeta } from '$lib/pagination';
 export const load = async ({ url }) => {
   const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 8);
   const query = `{
-    "music": *[_type == "music"] | order(_createdAt desc) [$start...$end],
+    "music": *[_type == "music"] | order(_createdAt desc) [$start...$end] {
+      _id,
+      title,
+      artist,
+      link,
+      coverImage {
+        asset,
+        crop,
+        hotspot
+      }
+    },
     "totalItems": count(*[_type == "music"]),
     "embedUrl": *[_type == "siteSettings"][0].spotifyEmbedUrl
   }`;

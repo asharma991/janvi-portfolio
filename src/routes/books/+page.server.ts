@@ -5,7 +5,21 @@ import { getPagination, paginationMeta } from '$lib/pagination';
 export const load = async ({ url }) => {
 	const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
 	const query = `{
-		"books": *[_type == "books"] | order(_createdAt desc) [$start...$end],
+		"books": *[_type == "books"] | order(_createdAt desc) [$start...$end] {
+			_id,
+			title,
+			author,
+			status,
+			genre,
+			favoriteQuote,
+			notes,
+			link,
+			coverImage {
+				asset,
+				crop,
+				hotspot
+			}
+		},
 		"totalItems": count(*[_type == "books"]),
 		"authors": array::unique(*[_type == "books" && defined(author)].author),
 		"genres": array::unique(*[_type == "books" && defined(genre)].genre)
