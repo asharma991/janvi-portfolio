@@ -1,32 +1,14 @@
-import { client } from '$lib/sanity/client';
 import type { MediaItem } from '$lib/sanity/types';
-import { getPagination, paginationMeta } from '$lib/pagination';
+import { getMediaPage } from '$lib/server/media';
 
-export const load = async ({ url }) => {
-  const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
-  const query = `{
-    "media": *[_type == "media"] | order(_createdAt desc) [$start...$end] {
-      _id,
-      caption,
-      image {
-        asset,
-        crop,
-        hotspot
-      }
-    },
-    "totalItems": count(*[_type == "media"])
-  }`;
+export const load = async () => {
   try {
-      const result = await client.fetch(query, { start, end });
-      if (result.media && result.media.length > 0) {
-        return { media: result.media, pagination: paginationMeta(page, pageSize, result.totalItems) };
-      }
-      throw new Error("No media found");
-  } catch (e) {
+      return await getMediaPage(1);
+  } catch {
       console.log("Using mock media");
       const mockMedia: MediaItem[] = [
         // Mock data logic can be added if needed, or just return empty
       ];
-      return { media: mockMedia, pagination: paginationMeta(page, pageSize, mockMedia.length) };
+      return { media: mockMedia, hasMore: false, nextPage: null };
   }
 };

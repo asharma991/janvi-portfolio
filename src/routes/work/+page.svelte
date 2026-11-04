@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CursorLink from '$lib/components/CursorLink.svelte';
   import ProjectCard from '$lib/components/ProjectCard.svelte';
   import Pagination from '$lib/components/Pagination.svelte';
   
@@ -12,9 +13,7 @@
 <div class="py-12">
   <div class="flex justify-between items-center mb-12">
     <h1 class="text-4xl font-bold tracking-tight">Work</h1>
-    <a href="/" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
-        ← Back Home
-    </a>
+    <CursorLink href="/" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">Back Home</CursorLink>
   </div>
   
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

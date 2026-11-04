@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CursorLink from '$lib/components/CursorLink.svelte';
   import { FileText } from 'lucide-svelte';
   let { data } = $props();
 </script>
@@ -32,8 +33,6 @@
   {/if}
   
   <div class="mt-8">
-    <a href="/" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">
-        ← Back Home
-    </a>
+    <CursorLink href="/" class="text-sm font-bold uppercase tracking-widest text-gray-400 hover:text-black transition-colors">Back Home</CursorLink>
   </div>
 </div>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import CursorLink from './CursorLink.svelte';
+	import { ArrowLeft, ArrowRight } from 'lucide-svelte';
 	let {
 		page,
 		totalPages,
@@ -13,18 +15,16 @@
 {#if totalPages > 1}
 	<nav class="mt-12 flex items-center justify-center gap-3" aria-label={`${label} pagination`}>
 		{#if page > 1}
-			<a
+			<CursorLink
 				href={pageHref(page - 1)}
 				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
-				rel="prev"
+				rel="prev">Previous</CursorLink
 			>
-				← Previous
-			</a>
 		{:else}
 			<span
-				class="cursor-not-allowed rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
+				class="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
 			>
-				← Previous
+				<ArrowLeft size={16} strokeWidth={2.5} aria-hidden="true" class="shrink-0" /> Previous
 			</span>
 		{/if}
 
@@ -33,18 +33,17 @@
 		</span>
 
 		{#if page < totalPages}
-			<a
+			<CursorLink
+				direction="next"
 				href={pageHref(page + 1)}
 				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
-				rel="next"
+				rel="next">Next</CursorLink
 			>
-				Next →
-			</a>
 		{:else}
 			<span
-				class="cursor-not-allowed rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
+				class="inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-full border border-black/5 bg-white/30 px-4 py-2 text-xs font-bold tracking-widest text-gray-300 uppercase"
 			>
-				Next →
+				Next <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" class="shrink-0" />
 			</span>
 		{/if}
 	</nav>

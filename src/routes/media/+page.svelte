@@ -1,16 +1,33 @@
 <script lang="ts">
+	import CursorLink from '$lib/components/CursorLink.svelte';
 	import { urlFor } from '$lib/sanity/client';
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
-	import { onDestroy } from 'svelte';
+	import type { MediaItem } from '$lib/sanity/types';
+	import { onDestroy, onMount, tick } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
 	import { ChevronLeft, ChevronRight, X } from 'lucide-svelte';
 
 	let { data } = $props();
 
+	function initialMediaState() {
+		return {
+			media: [...data.media] as MediaItem[],
+			hasMore: data.hasMore,
+			nextPage: data.nextPage as number | null
+		};
+	}
+
+	const initial = initialMediaState();
+	let media = $state<MediaItem[]>(initial.media);
+	let hasMore = $state(initial.hasMore);
+	let nextPage = $state<number | null>(initial.nextPage);
+	let isLoading = $state(false);
+	let loadError = $state(false);
+	let loadMoreElement = $state<HTMLDivElement>();
+	let loadController: AbortController | null = null;
 	let cursorType = $state<string | null>(null);
 	let selectedIndex = $state<number | null>(null);
-	let selectedImage = $derived(selectedIndex === null ? null : data.media[selectedIndex]);
+	let selectedImage = $derived(selectedIndex === null ? null : media[selectedIndex]);
 
 	function handleMouseEnter() {
 		cursorType = 'view';
@@ -32,7 +49,58 @@
 		document.body.classList.remove('has-custom-cursor');
 	}
 
+	async function loadMore() {
+		if (isLoading || !hasMore || nextPage === null) return;
+
+		isLoading = true;
+		loadError = false;
+		loadController = new AbortController();
+
+		try {
+			const response = await fetch(`/media/load?page=${nextPage}`, {
+				signal: loadController.signal
+			});
+			if (!response.ok) throw new Error('Unable to load more photos');
+
+			const result: { media: MediaItem[]; hasMore: boolean; nextPage: number | null } =
+				await response.json();
+			const existingIds = new Set(media.map((item) => item._id));
+			media = [...media, ...result.media.filter((item) => !existingIds.has(item._id))];
+			hasMore = result.hasMore;
+			nextPage = result.nextPage;
+		} catch (error) {
+			if (!(error instanceof DOMException && error.name === 'AbortError')) loadError = true;
+		} finally {
+			isLoading = false;
+		}
+
+		await tick();
+		if (
+			hasMore &&
+			!loadError &&
+			loadMoreElement &&
+			loadMoreElement.getBoundingClientRect().top < window.innerHeight + 500
+		) {
+			void loadMore();
+		}
+	}
+
+	onMount(() => {
+		if (!loadMoreElement) return;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) void loadMore();
+			},
+			{ rootMargin: '500px 0px' }
+		);
+		observer.observe(loadMoreElement);
+
+		return () => observer.disconnect();
+	});
+
 	onDestroy(() => {
+		loadController?.abort();
 		if (typeof document !== 'undefined') {
 			document.body.classList.remove('has-custom-cursor');
 		}
@@ -49,8 +117,8 @@
 	}
 
 	function navigateLightbox(direction: -1 | 1) {
-		if (selectedIndex === null || data.media.length < 2) return;
-		selectedIndex = (selectedIndex + direction + data.media.length) % data.media.length;
+		if (selectedIndex === null || media.length < 2) return;
+		selectedIndex = (selectedIndex + direction + media.length) % media.length;
 	}
 </script>
 
@@ -71,16 +139,14 @@
 <div class="py-12">
 	<div class="mb-12 flex items-center justify-between">
 		<h1 class="text-4xl font-bold tracking-tight">Media</h1>
-		<a
+		<CursorLink
 			href="/"
 			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
-		>
-			← Back Home
-		</a>
+		>Back Home</CursorLink>
 	</div>
 
 	<div class="columns-1 gap-8 space-y-8 md:columns-2 lg:columns-3">
-		{#each data.media as item, index (item._id)}
+		{#each media as item, index (item._id)}
 			<button
 				class="group relative block w-full break-inside-avoid overflow-hidden rounded-xl text-left focus:outline-none"
 				onmouseenter={handleMouseEnter}
@@ -110,11 +176,27 @@
 		{/each}
 	</div>
 
-	{#if data.media.length === 0}
+	{#if media.length === 0}
 		<div class="py-20 text-center text-gray-400">No media uploaded yet.</div>
 	{/if}
 
-	<Pagination {...data.pagination} label="photos" />
+	<div bind:this={loadMoreElement} class="flex min-h-24 items-center justify-center py-8">
+		{#if isLoading}
+			<p class="text-xs font-bold tracking-[0.18em] text-gray-400 uppercase" aria-live="polite">
+				Loading more photos…
+			</p>
+		{:else if loadError}
+			<button
+				type="button"
+				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
+				onclick={loadMore}
+			>
+				Try again
+			</button>
+		{:else if !hasMore && media.length > 0}
+			<p class="text-xs font-bold tracking-[0.18em] text-gray-300 uppercase">All photos loaded</p>
+		{/if}
+	</div>
 </div>
 
 <!-- Lightbox Modal -->
@@ -144,7 +226,7 @@
 				<X size={32} />
 			</button>
 
-			{#if data.media.length > 1}
+			{#if media.length > 1}
 				<button
 					class="fixed top-1/2 left-3 z-[210] -translate-y-1/2 rounded-full border border-white/20 bg-black/35 p-2.5 text-white/75 backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6 sm:p-3"
 					onmouseenter={() => showControlCursor('previous')}

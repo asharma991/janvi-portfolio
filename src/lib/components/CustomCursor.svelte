@@ -34,7 +34,11 @@
 		style="left: {mouseX}px; top: {mouseY}px;"
 	>
 		<!-- The Cat is always there -->
-		<Cat size={32} strokeWidth={2.5} />
+		<div
+			class="flex h-11 w-11 items-center justify-center rounded-full border border-[#831843] bg-white shadow-sm"
+		>
+			<Cat size={32} strokeWidth={2.5} />
+		</div>
 
 		<!-- The Secondary Icon -->
 		<div

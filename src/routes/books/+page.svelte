@@ -1,4 +1,5 @@
 <script lang="ts">
+	import CursorLink from '$lib/components/CursorLink.svelte';
 	import { resolve } from '$app/paths';
 	import { urlFor } from '$lib/sanity/client';
 	import Pagination from '$lib/components/Pagination.svelte';
@@ -49,12 +50,10 @@
 			</p>
 		</div>
 
-		<a
+		<CursorLink
 			href={resolve('/')}
 			class="shrink-0 text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
-		>
-			← Back Home
-		</a>
+		>Back Home</CursorLink>
 	</div>
 
 	{#if books.length > 0}
