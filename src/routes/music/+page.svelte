@@ -19,7 +19,7 @@
 		>
 	</div>
 
-	<div class="grid grid-cols-1 items-start gap-12 md:grid-cols-2">
+	<div class="grid grid-cols-1 items-start gap-x-12 md:grid-cols-2">
 		<!-- Playlists stack independently alongside the favorites grid. -->
 		<section id="playlists" class="min-w-0 scroll-mt-32 space-y-6" aria-label="Spotify playlists">
 			{#each data.playlists as playlist (playlist._key)}
@@ -44,8 +44,19 @@
 			{/each}
 		</section>
 
+		<div
+			class="mb-10 min-w-0 border-b border-black/10 pb-10 md:col-start-1 md:row-start-2 md:mb-0 md:border-0 md:pb-0"
+		>
+			<Pagination
+				{...data.playlistPagination}
+				label="playlists"
+				pageParam="playlistPage"
+				anchor="playlists"
+			/>
+		</div>
+
 		<!-- Song/Album Grid -->
-		<div class="grid grid-cols-2 gap-4">
+		<div class="grid grid-cols-2 gap-4 md:col-start-2 md:row-start-1">
 			{#each data.music as item (item._id)}
 				<a
 					href={item.link || '#'}
@@ -82,18 +93,7 @@
 				</div>
 			{/if}
 		</div>
-	</div>
-
-	<div class="grid grid-cols-1 items-start gap-x-12 md:grid-cols-2">
-		<div class="min-w-0">
-			<Pagination
-				{...data.playlistPagination}
-				label="playlists"
-				pageParam="playlistPage"
-				anchor="playlists"
-			/>
-		</div>
-		<div class="min-w-0">
+		<div class="min-w-0 md:col-start-2 md:row-start-2">
 			<Pagination {...data.pagination} label="music" />
 		</div>
 	</div>
