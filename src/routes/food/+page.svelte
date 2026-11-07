@@ -3,11 +3,10 @@
 	import { resolve } from '$app/paths';
 	import type { FoodGuide, FoodGuideCity } from '$lib/sanity/types';
 
-	let { data }: { data: { foodGuide?: FoodGuide } } = $props();
+	let { data }: { data: { foodGuide?: FoodGuide; selectedCity?: FoodGuideCity } } = $props();
 
-	let selectedCityIndex = $state(0);
 	const cities = $derived((data.foodGuide?.cities ?? []) as FoodGuideCity[]);
-	const selectedCity = $derived(cities[selectedCityIndex]);
+	const selectedCity = $derived(data.selectedCity);
 
 	function formatCategory(title?: string, category?: string) {
 		if (title) return title;
@@ -17,15 +16,7 @@
 			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
 			.join(' ');
 	}
-
-	function selectCity(index: number) {
-		selectedCityIndex = index;
-	}
 </script>
-
-<svelte:head>
-	<title>Food | Janvi</title>
-</svelte:head>
 
 <div class="py-12">
 	<div class="mb-12 flex items-center justify-between gap-4">
@@ -41,23 +32,24 @@
 		<CursorLink
 			href={resolve('/')}
 			class="shrink-0 text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
-		>Back Home</CursorLink>
+			>Back Home</CursorLink
+		>
 	</div>
 
 	{#if cities.length > 0}
 		<div class="mb-10 flex flex-wrap gap-3">
 			{#each cities as city, index (city.name)}
-				<button
+				<a
+					href="{resolve('/food')}{index === 0 ? '' : `?city=${encodeURIComponent(city.name)}`}"
+					aria-current={selectedCity?.name === city.name ? 'page' : undefined}
 					class={`rounded-full border px-4 py-2 text-sm font-bold tracking-widest uppercase transition-all duration-300 ${
-						selectedCityIndex === index
+						selectedCity?.name === city.name
 							? 'border-[#BE185D] bg-[#FEC5E5] text-[#831843]'
 							: 'border-black/10 bg-white/70 text-gray-700 hover:border-[#BE185D] hover:text-[#831843]'
 					}`}
-					onclick={() => selectCity(index)}
-					type="button"
 				>
 					{city.name}
-				</button>
+				</a>
 			{/each}
 		</div>
 
@@ -115,14 +107,16 @@
 													</div>
 
 													{#if item.link}
-														<button
-															type="button"
+														<!-- eslint-disable svelte/no-navigation-without-resolve -->
+														<a
+															href={item.link}
+															target="_blank"
+															rel="noopener noreferrer"
 															class="text-xs font-bold tracking-[0.18em] text-[#BE185D] uppercase transition-opacity hover:opacity-70"
-															onclick={() =>
-																window.open(item.link, '_blank', 'noopener,noreferrer')}
 														>
 															Open
-														</button>
+														</a>
+														<!-- eslint-enable svelte/no-navigation-without-resolve -->
 													{/if}
 												</div>
 

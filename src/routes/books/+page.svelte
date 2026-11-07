@@ -37,9 +37,6 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Books | Janvi</title>
-</svelte:head>
 
 <div class="py-12">
 	<div class="mb-12 flex items-center justify-between gap-4">

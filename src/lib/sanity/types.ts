@@ -1,3 +1,5 @@
+import type { InputValue } from '@portabletext/svelte';
+
 export interface SanityImage {
 	asset: {
 		_ref: string;
@@ -39,7 +41,7 @@ export interface Resume {
 }
 
 export interface About {
-	bio: unknown; // Portable Text
+	bio: InputValue;
 	image?: SanityImage;
 }
 

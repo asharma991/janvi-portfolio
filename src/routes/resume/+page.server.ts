@@ -1,20 +1,15 @@
-import { client } from '$lib/sanity/client';
+import { fetchContent } from '$lib/server/content';
 import type { Resume } from '$lib/sanity/types';
 
 export const load = async () => {
-  const query = `*[_type == "resume"][0] {
+	const query = `*[_type == "resume"][0] {
     file {
       asset-> {
         url
       }
     }
   }`;
-  
-  try {
-    const resume = await client.fetch(query);
-    if (resume) return { resume };
-    throw new Error("No resume found");
-  } catch (e) {
-    return { resume: null };
-  }
+
+	const resume = await fetchContent<Resume | null>(query);
+	return { resume };
 };

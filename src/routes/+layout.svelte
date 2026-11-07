@@ -3,13 +3,18 @@
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import Cat from '$lib/components/Cat.svelte';
+	import Seo from '$lib/components/Seo.svelte';
 	import { page } from '$app/stores';
 	import { dev } from '$app/environment';
 	import { injectAnalytics } from '@vercel/analytics/sveltekit';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	let { children, data } = $props();
 	injectAnalytics({ mode: dev ? 'development' : 'production' });
+	if (!dev) injectSpeedInsights();
 </script>
+
+<Seo />
 
 <div
 	class="flex min-h-screen flex-col bg-[#FFF5F9] font-sans text-gray-900 transition-colors duration-300 selection:bg-[#FEC5E5] selection:text-black"
@@ -19,7 +24,7 @@
 
 	<main
 		class="mx-auto w-full max-w-7xl flex-grow px-4 py-8 md:px-8 {$page.url.pathname === '/'
-			? 'flex min-h-[calc(100vh-100px)] w-full max-w-none items-center justify-center pt-28 pb-8'
+			? 'flex min-h-[calc(100vh-100px)] w-full max-w-none flex-col items-center justify-center pt-28 pb-8'
 			: 'pt-32'}"
 	>
 		{@render children()}

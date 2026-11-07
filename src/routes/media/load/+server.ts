@@ -1,15 +1,16 @@
-import { json } from '@sveltejs/kit';
+import { json, isHttpError } from '@sveltejs/kit';
 import { getMediaPage } from '$lib/server/media';
+import { pageRequest } from '$lib/server/content';
 
 export const GET = async ({ url }) => {
-	const parsedPage = Number.parseInt(url.searchParams.get('page') ?? '2', 10);
-	const page = Number.isFinite(parsedPage) && parsedPage > 1 ? parsedPage : 2;
+	const { page } = pageRequest(url, 9);
 
 	try {
 		return json(await getMediaPage(page), {
 			headers: { 'cache-control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=86400' }
 		});
-	} catch {
-		return json({ message: 'Unable to load more photos.' }, { status: 500 });
+	} catch (cause) {
+		if (isHttpError(cause)) throw cause;
+		return json({ message: 'Unable to load more photos.' }, { status: 503 });
 	}
 };

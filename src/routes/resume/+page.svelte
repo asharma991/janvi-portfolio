@@ -4,9 +4,6 @@
   let { data } = $props();
 </script>
 
-<svelte:head>
-  <title>Resume | Janvi</title>
-</svelte:head>
 
 <div class="flex flex-col items-center justify-center min-h-[60vh] max-w-2xl mx-auto text-center space-y-8">
   <h1 class="text-4xl font-bold tracking-tight">Resume</h1>

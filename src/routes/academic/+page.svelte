@@ -3,9 +3,6 @@
   let { data } = $props();
 </script>
 
-<svelte:head>
-  <title>Academic | Janvi</title>
-</svelte:head>
 
 <section class="py-12 md:py-20">
   <h1 class="text-4xl md:text-5xl font-bold mb-12 tracking-tight">Academic Writing</h1>

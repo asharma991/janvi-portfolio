@@ -1,14 +1,8 @@
-import type { MediaItem } from '$lib/sanity/types';
-import { getMediaPage } from '$lib/server/media';
+import { getMediaPage, MEDIA_PAGE_SIZE } from '$lib/server/media';
+import { pageRequest } from '$lib/server/content';
+import type { PageServerLoad } from './$types';
 
-export const load = async () => {
-  try {
-      return await getMediaPage(1);
-  } catch {
-      console.log("Using mock media");
-      const mockMedia: MediaItem[] = [
-        // Mock data logic can be added if needed, or just return empty
-      ];
-      return { media: mockMedia, hasMore: false, nextPage: null };
-  }
+export const load: PageServerLoad = async ({ url }) => {
+	const { page } = pageRequest(url, MEDIA_PAGE_SIZE);
+	return getMediaPage(page);
 };

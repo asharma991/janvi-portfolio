@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import CursorLink from '$lib/components/CursorLink.svelte';
 	import { urlFor } from '$lib/sanity/client';
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
@@ -130,10 +131,6 @@
 	}}
 />
 
-<svelte:head>
-	<title>Media | Janvi</title>
-</svelte:head>
-
 <CustomCursor {cursorType} />
 
 <div class="py-12">
@@ -142,7 +139,8 @@
 		<CursorLink
 			href="/"
 			class="text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
-		>Back Home</CursorLink>
+			>Back Home</CursorLink
+		>
 	</div>
 
 	<div class="columns-1 gap-8 space-y-8 md:columns-2 lg:columns-3">
@@ -179,6 +177,26 @@
 	{#if media.length === 0}
 		<div class="py-20 text-center text-gray-400">No media uploaded yet.</div>
 	{/if}
+
+	<nav
+		aria-label="Photo pages"
+		class="mt-8 flex justify-center gap-6 text-sm font-bold text-[#831843]"
+	>
+		{#if data.page > 1}
+			<a
+				href="{resolve('/media')}{data.page === 2 ? '' : `?page=${data.page - 1}`}"
+				data-sveltekit-reload
+				class="underline underline-offset-4">Previous photos</a
+			>
+		{/if}
+		{#if data.hasMore}
+			<a
+				href="{resolve('/media')}?page={data.page + 1}"
+				data-sveltekit-reload
+				class="underline underline-offset-4">Next photos</a
+			>
+		{/if}
+	</nav>
 
 	<div bind:this={loadMoreElement} class="flex min-h-24 items-center justify-center py-8">
 		{#if isLoading}

@@ -1,8 +1,10 @@
-import { client } from '$lib/sanity/client';
+import { error, redirect } from '@sveltejs/kit';
+import { fetchContent } from '$lib/server/content';
+import type { PageServerLoad } from './$types';
 import type { FoodGuide } from '$lib/sanity/types';
 
-export const load = async () => {
-  const query = `*[_type == "foodGuide"][0]{
+export const load: PageServerLoad = async ({ url }) => {
+	const query = `*[_type == "foodGuide"][0]{
     title,
     intro,
     cities[]{
@@ -24,17 +26,12 @@ export const load = async () => {
     }
   }`;
 
-  try {
-    const foodGuide = await client.fetch<FoodGuide | null>(query);
-    if (foodGuide) return { foodGuide };
-    throw new Error('No food guide found');
-  } catch {
-    const fallback: FoodGuide = {
-      title: 'Food',
-      intro: 'Build city-by-city food and drink guides in Sanity.',
-      cities: []
-    };
-
-    return { foodGuide: fallback };
-  }
+	const foodGuide = await fetchContent<FoodGuide | null>(query);
+	const city = url.searchParams.get('city');
+	const cities = foodGuide?.cities ?? [];
+	if (city !== null && !cities.some((entry) => entry.name === city))
+		error(404, 'City guide not found');
+	if (city && cities[0]?.name === city) redirect(308, '/food');
+	const selectedCity = cities.find((entry) => entry.name === city) ?? cities[0];
+	return { foodGuide: foodGuide ?? { title: 'Food', cities: [] }, selectedCity };
 };

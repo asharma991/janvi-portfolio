@@ -1,9 +1,10 @@
-import { client } from '$lib/sanity/client';
 import type { BooksItem } from '$lib/sanity/types';
-import { getPagination, paginationMeta } from '$lib/pagination';
+import { paginationMeta } from '$lib/pagination';
+import { fetchContent, pageRequest, ensurePageExists } from '$lib/server/content';
+import type { PageServerLoad } from './$types';
 
-export const load = async ({ url }) => {
-	const { page, pageSize, start, end } = getPagination(url.searchParams.get('page'), 9);
+export const load: PageServerLoad = async ({ url }) => {
+	const { page, pageSize, start, end } = pageRequest(url, 9);
 	const query = `{
 		"books": *[_type == "books"] | order(_createdAt desc) [$start...$end] {
 			_id,
@@ -24,21 +25,17 @@ export const load = async ({ url }) => {
 		"authors": array::unique(*[_type == "books" && defined(author)].author),
 		"genres": array::unique(*[_type == "books" && defined(genre)].genre)
 	}`;
-
-	try {
-		const result = await client.fetch(query, { start, end });
-		return {
-			books: (result.books || []) as BooksItem[],
-			authors: result.authors || [],
-			genres: result.genres || [],
-			pagination: paginationMeta(page, pageSize, result.totalItems)
-		};
-	} catch {
-		return {
-			books: [] as BooksItem[],
-			authors: [] as string[],
-			genres: [] as string[],
-			pagination: paginationMeta(page, pageSize, 0)
-		};
-	}
+	const result = await fetchContent<{
+		books: BooksItem[];
+		totalItems: number;
+		authors: string[];
+		genres: string[];
+	}>(query, { start, end });
+	ensurePageExists(page, pageSize, result.totalItems);
+	return {
+		books: result.books || [],
+		authors: result.authors || [],
+		genres: result.genres || [],
+		pagination: paginationMeta(page, pageSize, result.totalItems)
+	};
 };

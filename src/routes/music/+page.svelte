@@ -5,9 +5,6 @@
 	let { data } = $props();
 </script>
 
-<svelte:head>
-	<title>Music | Janvi</title>
-</svelte:head>
 
 <div class="py-12">
 	<div class="mb-12 flex items-center justify-between">
