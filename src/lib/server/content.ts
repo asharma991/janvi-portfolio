@@ -1,11 +1,9 @@
 import { error } from '@sveltejs/kit';
+import type { QueryParams } from '@sanity/client';
 import { client } from '$lib/sanity/client';
 import { getPagination } from '$lib/pagination';
 
-export async function fetchContent<T>(
-	query: string,
-	params: Record<string, number> = {}
-): Promise<T> {
+export async function fetchContent<T>(query: string, params: QueryParams = {}): Promise<T> {
 	try {
 		return await client.fetch<T>(query, params);
 	} catch {

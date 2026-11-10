@@ -38,6 +38,9 @@
   </div>
   
   <div class="p-6 flex flex-col flex-grow">
+     {#if project.category}
+        <p class="mb-2 text-xs font-bold tracking-wider text-[#831843] uppercase">{project.category}</p>
+     {/if}
      <h3 class="text-lg font-bold mb-2 tracking-tight group-hover:text-gray-700 transition-colors">{project.title}</h3>
      <p class="text-gray-600 text-sm line-clamp-3 leading-relaxed flex-grow">
         {project.description}

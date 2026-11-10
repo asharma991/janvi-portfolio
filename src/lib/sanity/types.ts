@@ -15,7 +15,7 @@ export interface Project {
 	mainImage?: SanityImage;
 	description: string;
 	link?: string;
-	category?: 'academic' | 'project' | 'article' | 'case-competition';
+	category?: string | null;
 }
 
 export interface MediaItem {

@@ -37,17 +37,10 @@ export default {
     },
     {
       name: 'category',
-      title: 'Category',
+      title: 'Work type',
       type: 'string',
-      options: {
-        list: [
-          { title: 'Academic', value: 'academic' },
-          { title: 'Project', value: 'project' },
-          { title: 'Article', value: 'article' },
-          { title: 'Case Competition', value: 'case-competition' },
-        ],
-      },
-      initialValue: 'project'
+      description: 'Enter one type, such as Project, Article, Academic, or Case Competition. Use the same wording for items you want to group.',
+      initialValue: 'Project'
     },
   ],
 }

@@ -95,6 +95,6 @@ export function pageSeo(url: URL, status = 200) {
 		description: city
 			? `Explore Janvi’s ${city} food guide, with favorite places to eat and drink and recommendations on what to order.`
 			: base.description,
-		noindex: false
+		noindex: url.pathname === '/work' && Boolean(url.searchParams.get('type'))
 	};
 }
