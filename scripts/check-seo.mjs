@@ -17,7 +17,7 @@ const { response: sitemap, html: xml } = await fetchPage('/sitemap.xml');
 assert.equal(sitemap.status, 200, 'Sitemap must be available');
 assert.match(sitemap.headers.get('content-type'), /xml/);
 const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => decode(match[1]));
-assert.ok(urls.length >= 9, 'Sitemap must include the main pages');
+assert.ok(urls.length >= 8, 'Sitemap must include the main pages');
 assert.equal(new Set(urls).size, urls.length, 'Sitemap must not duplicate URLs');
 for (let offset = 0; offset < urls.length; offset += 4) {
 	await Promise.all(

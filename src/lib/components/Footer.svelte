@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
 	import { Linkedin, Twitter, Mail, Newspaper, Link } from 'lucide-svelte';
 	import type { SiteSettings } from '$lib/sanity/types';
 	import { normalizeSocialLinks } from '$lib/socials';
@@ -47,15 +46,8 @@
 			</div>
 		</div>
 
-		<nav aria-label="Explore" class="flex flex-wrap gap-x-5 gap-y-3 text-sm">
-			<a href={resolve('/about')} class="hover:underline">About</a>
-			<a href={resolve('/work')} class="hover:underline">Work</a>
-			<a href={resolve('/academic')} class="hover:underline">Academic writing</a>
-			<a href={resolve('/resume')} class="hover:underline">Resume</a>
-		</nav>
-
 		<!-- Copyright / Extra -->
-		<div class="flex flex-col justify-end md:col-span-2 md:text-right">
+		<div class="flex flex-col justify-end md:text-right">
 			<!-- <p class="text-sm text-white/90">Based in [City, Country]</p> -->
 			<p class="mt-4 text-xs text-white/70">
 				&copy; {new Date().getFullYear()} Janvi. All rights reserved.

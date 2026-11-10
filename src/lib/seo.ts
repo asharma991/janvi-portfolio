@@ -5,7 +5,7 @@ export const seoPages: Record<string, { title: string; description: string }> = 
 	'/': {
 		title: 'Janvi | Strategy, Marketing & Writing',
 		description:
-			'Explore Janvi’s work in strategy, marketing and operations, academic research, personal essays, photography, and favorite books, music and food.'
+			'Explore Janvi’s work in strategy, marketing and operations, personal essays, photography, and favorite books, music and food.'
 	},
 	'/about': {
 		title: 'About Janvi | Interests & Background',
@@ -17,15 +17,9 @@ export const seoPages: Record<string, { title: string; description: string }> = 
 		description:
 			'Explore Janvi’s projects and professional work, with an interest in strategy, marketing, operations and research.'
 	},
-	'/academic': {
-		title: 'Academic Writing & Research | Janvi',
-		description:
-			'Read Janvi’s academic writing and research, with links to papers and published work.'
-	},
 	'/resume': {
 		title: 'Resume | Janvi',
-		description:
-			'Download Janvi’s latest resume and explore her professional work and academic research.'
+		description: 'Download Janvi’s latest resume and explore her professional work.'
 	},
 	'/media': {
 		title: 'Photography & Media | Janvi',
@@ -56,7 +50,7 @@ export function canonicalUrl(url: URL) {
 	const params =
 		url.pathname === '/music'
 			? ['page', 'playlistPage']
-			: ['/work', '/academic', '/books', '/media'].includes(url.pathname)
+			: ['/work', '/books', '/media'].includes(url.pathname)
 				? ['page']
 				: [];
 	for (const key of params) {

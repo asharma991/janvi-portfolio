@@ -24,7 +24,7 @@
 
 	<main
 		class="mx-auto w-full max-w-7xl flex-grow px-4 py-8 md:px-8 {$page.url.pathname === '/'
-			? 'flex min-h-[calc(100vh-100px)] w-full max-w-none flex-col items-center justify-center pt-28 pb-8'
+			? 'flex min-h-[calc(100vh-100px)] w-full max-w-none items-center justify-center pt-28 pb-8'
 			: 'pt-32'}"
 	>
 		{@render children()}

@@ -16,7 +16,6 @@ function escapeXml(value: string) {
 export const GET: RequestHandler = async () => {
 	const data = await fetchContent<{
 		projects: number;
-		academic: number;
 		books: number;
 		music: number;
 		media: number;
@@ -24,7 +23,6 @@ export const GET: RequestHandler = async () => {
 		settings: SiteSettings | null;
 	}>(`{
 		"projects": count(*[_type == "project"]),
-		"academic": count(*[_type == "academicWork"]),
 		"books": count(*[_type == "books"]),
 		"music": count(*[_type == "music"]),
 		"media": count(*[_type == "media"]),
@@ -34,7 +32,6 @@ export const GET: RequestHandler = async () => {
 	const urls = Object.keys(seoPages).map((path) => new URL(path, SITE_ORIGIN).href);
 	const collections: [string, number, number, string?][] = [
 		['/work', data.projects, 9],
-		['/academic', data.academic, 10],
 		['/books', data.books, 9],
 		['/music', data.music, 8],
 		['/media', data.media, MEDIA_PAGE_SIZE]
