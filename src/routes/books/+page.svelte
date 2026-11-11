@@ -4,29 +4,26 @@
 	import { urlFor } from '$lib/sanity/client';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import type { BooksItem } from '$lib/sanity/types';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import { booksFilterHref } from '$lib/books-filters';
+	import type { PageData } from './$types';
 
-	type PaginationData = { page: number; pageSize: number; totalItems: number; totalPages: number };
-	let {
-		data
-	}: {
-		data: { books: BooksItem[]; authors: string[]; genres: string[]; pagination: PaginationData };
-	} = $props();
-	let selectedAuthor = $state('all');
-	let selectedGenre = $state('all');
+	let { data }: { data: PageData } = $props();
 
 	const books = $derived((data.books ?? []) as BooksItem[]);
 	const authorOptions = $derived((data.authors ?? []).toSorted((a, b) => a.localeCompare(b)));
 	const genreOptions = $derived((data.genres ?? []).toSorted((a, b) => a.localeCompare(b)));
-	const visibleBooks = $derived(
-		books
-			.filter((entry) => selectedAuthor === 'all' || entry.author?.trim() === selectedAuthor)
-			.filter((entry) => selectedGenre === 'all' || entry.genre?.trim() === selectedGenre)
-			.toSorted((a, b) => {
-				if (a.status === 'currently-reading' && b.status !== 'currently-reading') return -1;
-				if (a.status !== 'currently-reading' && b.status === 'currently-reading') return 1;
-				return 0;
-			})
-	);
+
+	function applyFilters(form: HTMLFormElement) {
+		const values = new FormData(form);
+		const query = booksFilterHref(
+			page.url.searchParams,
+			String(values.get('author') ?? ''),
+			String(values.get('genre') ?? '')
+		);
+		void goto(`${resolve('/books')}${query}`, { keepFocus: true, noScroll: true });
+	}
 
 	function formatStatus(status?: BooksItem['status']) {
 		if (!status) return 'Added';
@@ -36,7 +33,6 @@
 			.join(' ');
 	}
 </script>
-
 
 <div class="py-12">
 	<div class="mb-12 flex items-center justify-between gap-4">
@@ -50,19 +46,26 @@
 		<CursorLink
 			href={resolve('/')}
 			class="shrink-0 text-sm font-bold tracking-widest text-gray-400 uppercase transition-colors hover:text-black"
-		>Back Home</CursorLink>
+			>Back Home</CursorLink
+		>
 	</div>
 
-	{#if books.length > 0}
-		<div
+	{#if data.totalBooks > 0}
+		<form
+			method="GET"
+			action={resolve('/books')}
+			onchange={(event) => applyFilters(event.currentTarget)}
+			onsubmit={(event) => {
+				event.preventDefault();
+				applyFilters(event.currentTarget);
+			}}
 			class="mb-8 flex flex-col gap-4 rounded-3xl border border-black/10 bg-white/50 p-4 backdrop-blur-sm md:flex-row md:items-end md:justify-between"
 		>
 			<div>
-				<p class="text-xs font-bold tracking-[0.2em] text-[#BE185D] uppercase">
-					Filters
-				</p>
+				<p class="text-xs font-bold tracking-[0.2em] text-[#BE185D] uppercase">Filters</p>
 				<p class="mt-2 text-sm text-gray-600">
-					Showing {visibleBooks.length} on this page · {data.pagination.totalItems} total books.
+					Showing {books.length} on this page · {data.pagination.totalItems}
+					{data.filters.author || data.filters.genre ? 'matching books' : 'total books'}.
 				</p>
 			</div>
 
@@ -72,10 +75,11 @@
 				>
 					Author
 					<select
-						bind:value={selectedAuthor}
+						name="author"
+						value={data.filters.author}
 						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
-						<option value="all">All Authors</option>
+						<option value="">All Authors</option>
 						{#each authorOptions as author (author)}
 							<option value={author}>{author}</option>
 						{/each}
@@ -87,21 +91,26 @@
 				>
 					Genre
 					<select
-						bind:value={selectedGenre}
+						name="genre"
+						value={data.filters.genre}
 						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
-						<option value="all">All Genres</option>
+						<option value="">All Genres</option>
 						{#each genreOptions as genre (genre)}
 							<option value={genre}>{genre}</option>
 						{/each}
 					</select>
 				</label>
 			</div>
-		</div>
+			<noscript
+				><button type="submit" class="text-sm font-bold text-[#831843]">Apply filters</button
+				></noscript
+			>
+		</form>
 
-		{#if visibleBooks.length > 0}
+		{#if books.length > 0}
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-				{#each visibleBooks as entry (entry._id)}
+				{#each books as entry (entry._id)}
 					<article
 						class="rounded-3xl border border-black/10 bg-white/60 p-5 shadow-sm backdrop-blur-sm transition-colors duration-300"
 					>
@@ -140,9 +149,7 @@
 							</div>
 
 							{#if entry.genre}
-								<p
-									class="mt-3 text-xs tracking-[0.18em] text-gray-500 uppercase"
-								>
+								<p class="mt-3 text-xs tracking-[0.18em] text-gray-500 uppercase">
 									{entry.genre}
 								</p>
 							{/if}
