@@ -15,12 +15,18 @@ export function bookFilterValues(values: string[], selected: string) {
 	);
 }
 
-export function booksFilterHref(searchParams: URLSearchParams, author: string, genre: string) {
+export function booksFilterHref(
+	searchParams: URLSearchParams,
+	author: string,
+	genre: string,
+	status = ''
+) {
 	const params = new URLSearchParams(searchParams);
 	params.delete('page');
 	for (const [key, value] of [
 		['author', author],
-		['genre', genre]
+		['genre', genre],
+		['status', status]
 	]) {
 		if (value) params.set(key, value);
 		else params.delete(key);

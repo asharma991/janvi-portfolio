@@ -14,18 +14,20 @@
 	const books = $derived((data.books ?? []) as BooksItem[]);
 	const authorOptions = $derived((data.authors ?? []).toSorted((a, b) => a.localeCompare(b)));
 	const genreOptions = $derived((data.genres ?? []).toSorted((a, b) => a.localeCompare(b)));
+	const statusOptions = $derived((data.statuses ?? []).toSorted((a, b) => a.localeCompare(b)));
 
 	function applyFilters(form: HTMLFormElement) {
 		const values = new FormData(form);
 		const query = booksFilterHref(
 			page.url.searchParams,
 			String(values.get('author') ?? ''),
-			String(values.get('genre') ?? '')
+			String(values.get('genre') ?? ''),
+			String(values.get('status') ?? '')
 		);
 		void goto(`${resolve('/books')}${query}`, { keepFocus: true, noScroll: true });
 	}
 
-	function formatStatus(status?: BooksItem['status']) {
+	function formatStatus(status?: string) {
 		if (!status) return 'Added';
 		return status
 			.split('-')
@@ -59,25 +61,27 @@
 				event.preventDefault();
 				applyFilters(event.currentTarget);
 			}}
-			class="mb-8 flex flex-col gap-4 rounded-3xl border border-black/10 bg-white/50 p-4 backdrop-blur-sm md:flex-row md:items-end md:justify-between"
+			class="mb-8 flex flex-col gap-4 rounded-3xl border border-black/10 bg-white/50 p-4 backdrop-blur-sm"
 		>
 			<div>
 				<p class="text-xs font-bold tracking-[0.2em] text-[#BE185D] uppercase">Filters</p>
 				<p class="mt-2 text-sm text-gray-600">
 					Showing {books.length} on this page · {data.pagination.totalItems}
-					{data.filters.author || data.filters.genre ? 'matching books' : 'total books'}.
+					{data.filters.author || data.filters.genre || data.filters.status
+						? 'matching books'
+						: 'total books'}.
 				</p>
 			</div>
 
-			<div class="flex flex-col gap-3 sm:flex-row">
+			<div class="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-3">
 				<label
-					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
+					class="flex min-w-0 flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
 				>
 					Author
 					<select
 						name="author"
 						value={data.filters.author}
-						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
+						class="w-full min-w-0 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
 						<option value="">All Authors</option>
 						{#each authorOptions as author (author)}
@@ -87,17 +91,32 @@
 				</label>
 
 				<label
-					class="flex flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
+					class="flex min-w-0 flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
 				>
 					Genre
 					<select
 						name="genre"
 						value={data.filters.genre}
-						class="min-w-44 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
+						class="w-full min-w-0 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
 					>
 						<option value="">All Genres</option>
 						{#each genreOptions as genre (genre)}
 							<option value={genre}>{genre}</option>
+						{/each}
+					</select>
+				</label>
+				<label
+					class="flex min-w-0 flex-col gap-2 text-xs font-bold tracking-[0.18em] text-gray-500 uppercase"
+				>
+					Reading Status
+					<select
+						name="status"
+						value={data.filters.status}
+						class="w-full min-w-0 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm font-medium tracking-normal text-gray-700 focus:border-[#F9A8D4] focus:ring-[#F9A8D4]"
+					>
+						<option value="">All Statuses</option>
+						{#each statusOptions as status (status)}
+							<option value={status}>{formatStatus(status)}</option>
 						{/each}
 					</select>
 				</label>
@@ -183,7 +202,7 @@
 			<div
 				class="rounded-3xl border border-dashed border-black/10 px-6 py-16 text-center text-gray-500"
 			>
-				No books match the current author and genre filters.
+				No books match the selected filters.
 			</div>
 		{/if}
 

@@ -3,6 +3,43 @@ import { test } from 'node:test';
 import { bookFilterOptions, bookFilterValues, booksFilterHref } from './books-filters.ts';
 import { paginationHref } from './pagination.ts';
 
+test('any saved reading status combines with author and genre and survives pagination', () => {
+	const savedStatuses = ['read', 'currently-reading', 'paused', 'new-custom-status'];
+	for (const value of bookFilterOptions(savedStatuses)) {
+		const query = new URLSearchParams(
+			booksFilterHref(
+				new URLSearchParams('page=8'),
+				'Amit Chaudhuri',
+				'Slice of Life',
+				value
+			).slice(1)
+		);
+		assert.equal(query.has('page'), false);
+		assert.equal(query.get('status'), value);
+		assert.equal(query.get('author'), 'Amit Chaudhuri');
+		assert.equal(query.get('genre'), 'Slice of Life');
+		const nextPage = new URLSearchParams(paginationHref(query, 2).slice(1));
+		assert.equal(nextPage.get('status'), value);
+		assert.equal(nextPage.get('page'), '2');
+	}
+});
+
+test('status options come from saved values without an allowed-status list', () => {
+	const saved = ['read', ' paused ', 'Paused', '', 'new-custom-status'];
+	assert.deepEqual(bookFilterOptions(saved), ['read', 'paused', 'new-custom-status']);
+	assert.deepEqual(bookFilterValues(saved, 'paused'), [' paused ', 'Paused']);
+	assert.deepEqual(bookFilterOptions([]), []);
+});
+
+test('clearing reading status preserves the author and genre selections', () => {
+	const original = new URLSearchParams('page=2&status=read&author=Amit&genre=Fiction');
+	const query = new URLSearchParams(booksFilterHref(original, 'Amit', 'Fiction', '').slice(1));
+	assert.equal(query.has('status'), false);
+	assert.equal(query.has('page'), false);
+	assert.equal(query.get('author'), 'Amit');
+	assert.equal(query.get('genre'), 'Fiction');
+});
+
 test('duplicate options collapse while all original whitespace and case variants still match', () => {
 	const authors = ['Amit Chaudhuri', ' Amit Chaudhuri ', 'AMIT CHAUDHURI', '', '   ', 'Other'];
 	assert.deepEqual(bookFilterOptions(authors), ['Amit Chaudhuri', 'Other']);
