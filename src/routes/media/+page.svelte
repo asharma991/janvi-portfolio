@@ -4,6 +4,7 @@
 	import { urlFor } from '$lib/sanity/client';
 	import CustomCursor from '$lib/components/CustomCursor.svelte';
 	import type { MediaItem } from '$lib/sanity/types';
+	import { createThrottledTask } from '$lib/throttled-task';
 	import { onDestroy, onMount, tick } from 'svelte';
 	import { fade, scale } from 'svelte/transition';
 	import { ChevronLeft, ChevronRight, X } from 'lucide-svelte';
@@ -25,7 +26,7 @@
 	let isLoading = $state(false);
 	let loadError = $state(false);
 	let loadMoreElement = $state<HTMLDivElement>();
-	let loadController: AbortController | null = null;
+	let destroyed = false;
 	let cursorType = $state<string | null>(null);
 	let selectedIndex = $state<number | null>(null);
 	let selectedImage = $derived(selectedIndex === null ? null : media[selectedIndex]);
@@ -50,50 +51,70 @@
 		document.body.classList.remove('has-custom-cursor');
 	}
 
-	async function loadMore() {
-		if (isLoading || !hasMore || nextPage === null) return;
+	function isGalleryEndVisible() {
+		if (!loadMoreElement) return false;
+		const bounds = loadMoreElement.getBoundingClientRect();
+		return bounds.top < window.innerHeight && bounds.bottom > 0;
+	}
+
+	// Reserve image space before downloads finish so the end marker cannot rush
+	// through every page while unloaded images still have zero height.
+	function photoAspectRatio(image: MediaItem['image']) {
+		const dimensions = image.asset._ref.match(/-(\d+)x(\d+)-[^-]+$/);
+		return dimensions ? `auto ${dimensions[1]} / ${dimensions[2]}` : undefined;
+	}
+
+	const throttledLoad = createThrottledTask(async (signal) => {
+		// The user may have scrolled away during the throttle delay.
+		if (destroyed || !hasMore || nextPage === null || !isGalleryEndVisible()) return;
+		const response = await fetch(`${resolve('/media/load')}?page=${nextPage}`, { signal });
+		if (!response.ok) throw new Error('Unable to load more photos');
+
+		const result: { media: MediaItem[]; hasMore: boolean; nextPage: number | null } =
+			await response.json();
+		signal.throwIfAborted();
+		const existingIds = new Set(media.map((item) => item._id));
+		media = [...media, ...result.media.filter((item) => !existingIds.has(item._id))];
+		hasMore = result.hasMore;
+		nextPage = result.nextPage;
+	});
+
+	async function loadMore(retry = false) {
+		if (
+			destroyed ||
+			isLoading ||
+			!hasMore ||
+			nextPage === null ||
+			(loadError && !retry) ||
+			!isGalleryEndVisible()
+		)
+			return;
 
 		isLoading = true;
 		loadError = false;
-		loadController = new AbortController();
-
 		try {
-			const response = await fetch(`/media/load?page=${nextPage}`, {
-				signal: loadController.signal
-			});
-			if (!response.ok) throw new Error('Unable to load more photos');
-
-			const result: { media: MediaItem[]; hasMore: boolean; nextPage: number | null } =
-				await response.json();
-			const existingIds = new Set(media.map((item) => item._id));
-			media = [...media, ...result.media.filter((item) => !existingIds.has(item._id))];
-			hasMore = result.hasMore;
-			nextPage = result.nextPage;
+			await throttledLoad.run();
 		} catch (error) {
-			if (!(error instanceof DOMException && error.name === 'AbortError')) loadError = true;
+			if (!destroyed) loadError = true;
 		} finally {
-			isLoading = false;
+			if (!destroyed) isLoading = false;
 		}
 
+		if (destroyed) return;
 		await tick();
-		if (
-			hasMore &&
-			!loadError &&
-			loadMoreElement &&
-			loadMoreElement.getBoundingClientRect().top < window.innerHeight + 500
-		) {
+		if (hasMore && !loadError && isGalleryEndVisible()) {
 			void loadMore();
 		}
 	}
 
 	onMount(() => {
-		if (!loadMoreElement) return;
+		if (!loadMoreElement || !('IntersectionObserver' in window)) return;
 
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (entries.some((entry) => entry.isIntersecting)) void loadMore();
 			},
-			{ rootMargin: '500px 0px' }
+			{ rootMargin: '0px' }
 		);
 		observer.observe(loadMoreElement);
 
@@ -101,7 +122,8 @@
 	});
 
 	onDestroy(() => {
-		loadController?.abort();
+		destroyed = true;
+		throttledLoad.cancel();
 		if (typeof document !== 'undefined') {
 			document.body.classList.remove('has-custom-cursor');
 		}
@@ -156,6 +178,8 @@
 					<img
 						src={urlFor(item.image).width(800).url()}
 						alt={item.caption || 'Media'}
+						style:aspect-ratio={photoAspectRatio(item.image)}
+						loading="lazy"
 						class="h-auto w-full object-cover transition-transform duration-700 group-hover:scale-105"
 					/>
 					{#if item.caption}
@@ -178,25 +202,27 @@
 		<div class="py-20 text-center text-gray-400">No media uploaded yet.</div>
 	{/if}
 
-	<nav
-		aria-label="Photo pages"
-		class="mt-8 flex justify-center gap-6 text-sm font-bold text-[#831843]"
-	>
-		{#if data.page > 1}
-			<a
-				href="{resolve('/media')}{data.page === 2 ? '' : `?page=${data.page - 1}`}"
-				data-sveltekit-reload
-				class="underline underline-offset-4">Previous photos</a
-			>
-		{/if}
-		{#if data.hasMore}
-			<a
-				href="{resolve('/media')}?page={data.page + 1}"
-				data-sveltekit-reload
-				class="underline underline-offset-4">Next photos</a
-			>
-		{/if}
-	</nav>
+	<noscript>
+		<nav
+			aria-label="Photo pages"
+			class="mt-8 flex justify-center gap-6 text-sm font-bold text-[#831843]"
+		>
+			{#if data.page > 1}
+				<a
+					href="{resolve('/media')}{data.page === 2 ? '' : `?page=${data.page - 1}`}"
+					data-sveltekit-reload
+					class="underline underline-offset-4">Previous photos</a
+				>
+			{/if}
+			{#if data.hasMore}
+				<a
+					href="{resolve('/media')}?page={data.page + 1}"
+					data-sveltekit-reload
+					class="underline underline-offset-4">Next photos</a
+				>
+			{/if}
+		</nav>
+	</noscript>
 
 	<div bind:this={loadMoreElement} class="flex min-h-24 items-center justify-center py-8">
 		{#if isLoading}
@@ -207,9 +233,17 @@
 			<button
 				type="button"
 				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
-				onclick={loadMore}
+				onclick={() => loadMore(true)}
 			>
 				Try again
+			</button>
+		{:else if hasMore}
+			<button
+				type="button"
+				class="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-bold tracking-widest text-gray-600 uppercase transition-colors hover:border-[#BE185D] hover:text-[#831843]"
+				onclick={() => loadMore()}
+			>
+				Load more photos
 			</button>
 		{:else if !hasMore && media.length > 0}
 			<p class="text-xs font-bold tracking-[0.18em] text-gray-300 uppercase">All photos loaded</p>
